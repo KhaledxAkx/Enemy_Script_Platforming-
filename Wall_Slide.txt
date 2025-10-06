@@ -1,0 +1,32 @@
+const WALL_SLIDE_SPEED = 80.0        # Slow sliding speed
+const WALL_JUMP_HORIZONTAL_SPEED = 360.0  # Push away from wall
+
+
+# --- Variables ---
+var is_wall_sliding = false
+var wall_dir = 0  # -1 = left wall, 1 = right wall
+
+
+# --- The Wall Slide Function ---
+func handle_wall_slide(direction):
+	is_wall_sliding = false
+	wall_dir = 0
+
+	if not is_on_floor() and is_on_wall() and velocity.y > 0:
+		is_wall_sliding = true
+		velocity.y = min(velocity.y, WALL_SLIDE_SPEED)
+
+		# Determine wall side using last collision
+		var collision = get_last_slide_collision()
+		if collision:
+			wall_dir = -1 if collision.get_normal().x > 0 else 1
+
+
+		anim.play("Wall_Slide")
+
+# --- The Wall Slide Function Activate ---
+func _physics_process(delta: float) -> void:
+	handle_wall_slide(direction)
+
+
+
